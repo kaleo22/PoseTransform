@@ -2,6 +2,8 @@ import rclpy
 from rclpy.node import Node
 from tf2_ros import TransformListener, Buffer
 from geometry_msgs.msg import TransformStamped
+from scipy.spatial.transform import Rotation as R
+import numpy as np
 
 class TFListenerNode(Node):
 
@@ -45,6 +47,31 @@ class TFListenerNode(Node):
         ry = rotation.y
         rz = rotation.z
         rw = rotation.w
+
+
+        try: 
+
+            if Origin: 
+
+                rot = R.from_quat(rw, rx, ry, rz)
+
+                trans = np.array([x], [y], [z])
+
+                Pose = rot.apply(trans)
+
+                x = Pose[1, 1]
+                y = Pose[2, 1]
+                z = Pose[3, 1]
+
+        except NameError:
+
+            self.get_logger().info(f'Tag0 not found!')
+        
+
+        if target_frame == str('Tag0') and Origin not in locals() and Origin not in globals():
+            Origin = Pose
+        else:
+            pass
         
         # Log the results
         self.get_logger().info(f'Transform from {self.base_frame} to {target_frame}:')
