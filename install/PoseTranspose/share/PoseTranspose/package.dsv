@@ -1,0 +1,6 @@
+source;share/PoseTranspose/hook/pythonpath.ps1
+source;share/PoseTranspose/hook/pythonpath.dsv
+source;share/PoseTranspose/hook/pythonpath.sh
+source;share/PoseTranspose/hook/ament_prefix_path.ps1
+source;share/PoseTranspose/hook/ament_prefix_path.dsv
+source;share/PoseTranspose/hook/ament_prefix_path.sh
