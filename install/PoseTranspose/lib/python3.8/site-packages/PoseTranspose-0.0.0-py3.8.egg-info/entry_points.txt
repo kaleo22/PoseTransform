@@ -1,3 +1,3 @@
 [console_scripts]
-
+PoseTransposeNode = PoseTranspose.PoseTransposeNode:main
 

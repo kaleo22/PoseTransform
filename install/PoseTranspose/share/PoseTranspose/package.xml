@@ -3,9 +3,14 @@
 <package format="3">
   <name>PoseTranspose</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>'Transpose of AprilTag Coordinates in Camera Coordinatesystem into relative Coordinatesystem of the Tag0 AprilTag'</description>
   <maintainer email="leonard.kaempf@icloud.com">leonard</maintainer>
-  <license>TODO: License declaration</license>
+  <license>'Apache License 2.0'</license>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>scipy</exec_depend>
+  <exec_depend>numpy</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
