@@ -57,7 +57,7 @@ class TFListenerNode(Node):
 
                 trans = np.array([x], [y], [z])
 
-                Pose = rot.apply(trans)
+                Pose = rot.apply(trans) - Origin
 
                 x = Pose[1, 1]
                 y = Pose[2, 1]
@@ -69,8 +69,16 @@ class TFListenerNode(Node):
         
 
         if target_frame == str('Tag0') and Origin not in locals() and Origin not in globals():
+            rot = R.from_quat(rw, rx, ry, rz)
+
+            trans = np.array([x], [y], [z])
+
+            Pose = rot.apply(trans)
+
             Origin = Pose
+        
         else:
+            
             pass
         
         # Log the results
