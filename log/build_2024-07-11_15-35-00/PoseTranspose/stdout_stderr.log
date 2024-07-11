@@ -1,0 +1,18 @@
+running develop
+running egg_info
+writing PoseTranspose.egg-info/PKG-INFO
+writing dependency_links to PoseTranspose.egg-info/dependency_links.txt
+writing entry points to PoseTranspose.egg-info/entry_points.txt
+writing requirements to PoseTranspose.egg-info/requires.txt
+writing top-level names to PoseTranspose.egg-info/top_level.txt
+reading manifest file 'PoseTranspose.egg-info/SOURCES.txt'
+writing manifest file 'PoseTranspose.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/leonard/peak_cam_docker_container/PoseTranspose/install/PoseTranspose/lib/python3.8/site-packages/site.py
+Creating /home/leonard/peak_cam_docker_container/PoseTranspose/install/PoseTranspose/lib/python3.8/site-packages/PoseTranspose.egg-link (link to .)
+Installing PoseTransposeNode script to /home/leonard/peak_cam_docker_container/PoseTranspose/install/PoseTranspose/lib/PoseTranspose
+
+Installed /home/leonard/peak_cam_docker_container/PoseTranspose/build/PoseTranspose
+running symlink_data
+symbolically linking /home/leonard/peak_cam_docker_container/PoseTranspose/build/PoseTranspose/resource/PoseTranspose -> /home/leonard/peak_cam_docker_container/PoseTranspose/install/PoseTranspose/share/ament_index/resource_index/packages
+symbolically linking /home/leonard/peak_cam_docker_container/PoseTranspose/build/PoseTranspose/package.xml -> /home/leonard/peak_cam_docker_container/PoseTranspose/install/PoseTranspose/share/PoseTranspose

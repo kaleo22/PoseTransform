@@ -1,0 +1,20 @@
+[0.518s] Invoking command in '/home/leonard/peak_cam_docker_container/PoseTranspose/build/PoseTranspose': CONDA_PROMPT_MODIFIER=(base) PYTHONPATH=/home/leonard/peak_cam_docker_container/PoseTranspose/build/PoseTranspose/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/leonard/peak_cam_docker_container/PoseTranspose/install/PoseTranspose/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py develop --editable --build-directory /home/leonard/peak_cam_docker_container/PoseTranspose/build/PoseTranspose/build --no-deps symlink_data --force
+[0.700s] running develop
+[0.796s] running egg_info
+[0.796s] writing PoseTranspose.egg-info/PKG-INFO
+[0.796s] writing dependency_links to PoseTranspose.egg-info/dependency_links.txt
+[0.796s] writing entry points to PoseTranspose.egg-info/entry_points.txt
+[0.796s] writing requirements to PoseTranspose.egg-info/requires.txt
+[0.796s] writing top-level names to PoseTranspose.egg-info/top_level.txt
+[0.824s] reading manifest file 'PoseTranspose.egg-info/SOURCES.txt'
+[0.824s] writing manifest file 'PoseTranspose.egg-info/SOURCES.txt'
+[0.853s] running build_ext
+[0.854s] Creating /home/leonard/peak_cam_docker_container/PoseTranspose/install/PoseTranspose/lib/python3.8/site-packages/site.py
+[0.855s] Creating /home/leonard/peak_cam_docker_container/PoseTranspose/install/PoseTranspose/lib/python3.8/site-packages/PoseTranspose.egg-link (link to .)
+[0.856s] Installing PoseTransposeNode script to /home/leonard/peak_cam_docker_container/PoseTranspose/install/PoseTranspose/lib/PoseTranspose
+[0.856s] 
+[0.856s] Installed /home/leonard/peak_cam_docker_container/PoseTranspose/build/PoseTranspose
+[0.856s] running symlink_data
+[0.856s] symbolically linking /home/leonard/peak_cam_docker_container/PoseTranspose/build/PoseTranspose/resource/PoseTranspose -> /home/leonard/peak_cam_docker_container/PoseTranspose/install/PoseTranspose/share/ament_index/resource_index/packages
+[0.856s] symbolically linking /home/leonard/peak_cam_docker_container/PoseTranspose/build/PoseTranspose/package.xml -> /home/leonard/peak_cam_docker_container/PoseTranspose/install/PoseTranspose/share/PoseTranspose
+[0.885s] Invoked command in '/home/leonard/peak_cam_docker_container/PoseTranspose/build/PoseTranspose' returned '0': CONDA_PROMPT_MODIFIER=(base) PYTHONPATH=/home/leonard/peak_cam_docker_container/PoseTranspose/build/PoseTranspose/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/leonard/peak_cam_docker_container/PoseTranspose/install/PoseTranspose/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py develop --editable --build-directory /home/leonard/peak_cam_docker_container/PoseTranspose/build/PoseTranspose/build --no-deps symlink_data --force
