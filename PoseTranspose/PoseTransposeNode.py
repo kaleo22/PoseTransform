@@ -1,10 +1,11 @@
 #!/home/leonard/peak_cam_docker_container/.venv/bin/python3
 
+
 import rclpy
 from rclpy.node import Node
 from rclpy.time import Time
 from tf2_ros import TransformListener, Buffer
-from geometry_msgs.msg import TransformStamped, PointStamped
+from geometry_msgs.msg import TransformStamped
 from scipy.spatial.transform import Rotation as R
 import numpy as np
 
@@ -14,7 +15,7 @@ class PoseTransposeNode(Node):
         super().__init__('pose_transpose_node')
         
         # Declare parameters
-        self.declare_parameter('base_frame', [])
+        self.declare_parameter('base_frame', '')
         self.declare_parameter('target_frames', [])
         
         # Get parameters
@@ -29,7 +30,7 @@ class PoseTransposeNode(Node):
         self.timer = self.create_timer(0.1, self.on_timer)
         
         # Publisher for the /pose topic
-        self.pose_publisher = self.create_publisher(PointStamped, '/pose', 10)
+        self.pose_publisher = self.create_publisher(TransformStamped, '/pose', 10)
         
         self.origin = None
 
@@ -71,13 +72,18 @@ class PoseTransposeNode(Node):
         self.get_logger().info(f'Translation: x={x}, y={y}, z={z}')
         self.get_logger().info(f'Rotation: x={rx}, y={ry}, z={rz}, w={rw}')
         
-        # Publish the pose
-        pose_msg = PointStamped()
+        # Publish the pose as TransformStamped
+        pose_msg = TransformStamped()
         pose_msg.header.stamp = self.get_clock().now().to_msg()
-        pose_msg.header.frame_id = target_frame
-        pose_msg.point.x = x
-        pose_msg.point.y = y
-        pose_msg.point.z = z
+        pose_msg.header.frame_id = self.base_frame
+        pose_msg.child_frame_id = target_frame
+        pose_msg.transform.translation.x = x
+        pose_msg.transform.translation.y = y
+        pose_msg.transform.translation.z = z
+        pose_msg.transform.rotation.x = rx
+        pose_msg.transform.rotation.y = ry
+        pose_msg.transform.rotation.z = rz
+        pose_msg.transform.rotation.w = rw
         self.pose_publisher.publish(pose_msg)
 
 def main(args=None):
