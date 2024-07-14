@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'PoseTranspose'
+package_name = 'PoseTransform'
 
 setup(
     name=package_name,
@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'PoseTransposeNode = PoseTranspose.PoseTransposeNode:main'
+            'PoseTransformNode = PoseTransform.PoseTransformNode:main'
         ],
     },
 )
