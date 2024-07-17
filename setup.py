@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'PoseTransformNode = PoseTransform.PoseTransformNode:main'
+            'PoseTransformNode = pose_transform.PoseTransformNode:main'
         ],
     },
 )

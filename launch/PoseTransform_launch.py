@@ -7,7 +7,7 @@ import yaml
 
 def generate_launch_description():
     
-    parameters = Path('/PoseTransform/params/config.yaml')
+    parameters = Path('/pose_transform/params/config.yaml')
 
     with open(parameters, 'r') as f:
         params = yaml.safe_load(f)['pose_transpose_node']['ros__parameters']
@@ -17,11 +17,11 @@ def generate_launch_description():
     PoseTransformNodeContainer = ComposableNodeContainer(
         name = 'PoseTransformNode',
         namespace = '',
-        package = 'PoseTransform',
+        package = 'pose_transform',
         executable = 'PoseTransformNode',
         composable_node_descriptions=[
             ComposableNode(
-                package='PoseTransform',
+                package='pose_transform',
                 plugin='',
                 name='PoseTransform',
                 parameters=[params])
