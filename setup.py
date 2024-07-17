@@ -23,8 +23,5 @@ setup(
             'PoseTransformNode = pose_transform.PoseTransformNode:main'
         ],
     },
-    data_files=[
-        ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name + '/resource', ['resource/pose_transform']),
-    ],
+    
 )
