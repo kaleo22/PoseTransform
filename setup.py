@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'pose_transpose'
+package_name = 'pose_transform'
 
 setup(
     name=package_name,
