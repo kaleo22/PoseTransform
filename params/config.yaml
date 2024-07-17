@@ -1,4 +1,4 @@
-pose_transpose_node:
+pose_transform_node:
   ros__parameters:
     base_frame: ["camera_1"]
     target_frame: ["tagID_0", "tagID_1", "tagID_2"]

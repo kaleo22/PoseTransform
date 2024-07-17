@@ -9,10 +9,10 @@ from geometry_msgs.msg import TransformStamped
 from scipy.spatial.transform import Rotation as R
 import numpy as np
 
-class PoseTransposeNode(Node):
+class PoseTransformNode(Node):
 
     def __init__(self):
-        super().__init__('pose_transpose_node')
+        super().__init__('pose_transform_node')
         
         # Declare parameters
         self.declare_parameter('base_frame', '')
@@ -90,7 +90,7 @@ def main(args=None):
     rclpy.init(args=args)
     
     # Create the node and load parameters
-    node = PoseTransposeNode()
+    node = PoseTransformNode()
     
     rclpy.spin(node)
     node.destroy_node()
