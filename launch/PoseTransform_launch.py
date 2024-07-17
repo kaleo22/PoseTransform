@@ -10,7 +10,7 @@ def generate_launch_description():
     parameters = Path('/pose_transform/params/config.yaml')
 
     with open(parameters, 'r') as f:
-        params = yaml.safe_load(f)['pose_transpose_node']['ros__parameters']
+        params = yaml.safe_load(f)['pose_transform_node']['ros__parameters']
     print(params)
         
         
