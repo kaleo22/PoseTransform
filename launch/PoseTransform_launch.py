@@ -23,7 +23,7 @@ def generate_launch_description():
             ComposableNode(
                 package='pose_transform',
                 plugin='',
-                name='PoseTransform',
+                name='pose_transform',
                 parameters=[params])
         ],
         output = 'screen'
