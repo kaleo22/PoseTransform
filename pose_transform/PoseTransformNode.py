@@ -12,6 +12,7 @@ import numpy as np
 
 class PoseTransformNode(Node):
 
+
     def __init__(self):
         super().__init__('pose_transform_node')
 
@@ -94,6 +95,13 @@ class PoseTransformNode(Node):
         pose_msg.transform.rotation.z = rz
         pose_msg.transform.rotation.w = rw
         self.pose_publisher.publish(pose_msg)
+
+    def pose_callback(self, msg):
+        
+        self.get_logger().info(f'Received pose: {msg}')
+
+        self.pose_subscription = self.create_subscription(TransformStamped, '/pose', self.pose_callback, 10)
+        self.pose_subscription 
 
 def main(args=None):
     rclpy.init(args=args)
