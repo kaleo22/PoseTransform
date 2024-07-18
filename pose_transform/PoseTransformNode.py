@@ -5,7 +5,7 @@ import rclpy
 from rclpy.node import Node
 from rclpy.time import Time
 from tf2_ros import TransformListener, Buffer
-from geometry_msgs.msg import TransformStamped
+from geometry_msgs.msg import TransformStamped, TFMessage
 from scipy.spatial.transform import Rotation as R
 import numpy as np
 
@@ -19,7 +19,7 @@ class PoseTransformNode(Node):
             self.get_logger().info(f"Translation: x={msg.transform.translation.x}, y={msg.transform.translation.y}, z={msg.transform.translation.z}")
             self.get_logger().info(f"Rotation: x={msg.transform.rotation.x}, y={msg.transform.rotation.y}, z={msg.transform.rotation.z}, w={msg.transform.rotation.w}")
 
-        self.tf_subscriber = self.create_subscription(TransformStamped, '/tf', tf_callback, 10)
+        self.tf_subscriber = self.create_subscription(TFMessage, '/tf', tf_callback, 10)
         
         
         # Declare parameters
@@ -38,7 +38,7 @@ class PoseTransformNode(Node):
         self.timer = self.create_timer(0.1, self.on_timer)
         
         # Publisher for the /pose topic
-        self.pose_publisher = self.create_publisher(TransformStamped, '/pose', 10)
+        self.pose_publisher = self.create_publisher(TFMessage, '/pose', 10)
         
         self.origin = None
 
@@ -51,7 +51,7 @@ class PoseTransformNode(Node):
             except Exception as e:
                 self.get_logger().info(f'Could not get transform from {self.base_frame} to {target_frame}: {e}')
 
-    def process_transform(self, trans: TransformStamped, target_frame: str):
+    def process_transform(self, trans: TFMessage, target_frame: str):
         # Extract translation
         translation = trans.transform.translation
         x = translation.x
