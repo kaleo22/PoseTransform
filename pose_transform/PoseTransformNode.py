@@ -35,13 +35,13 @@ class Pose_Transform_Node(Node):
                 
                 self.frame_id = transform_stamped.header.frame_id
                 self.child_frame_id = transform_stamped.child_frame_id
-                self.x = transform_stamped.translation.x
-                self.y = transform_stamped.translation.y
-                self.z = transform_stamped.translation.z
-                self.rx = transform_stamped.rotation.x
-                self.ry = transform_stamped.rotation.y
-                self.rz = transform_stamped.rotation.z
-                self.rw = transform_stamped.rotation.w
+                self.x = transform_stamped.transform.translation.x
+                self.y = transform_stamped.transform.translation.y
+                self.z = transform_stamped.transform.translation.z
+                self.rx = transform_stamped.transform.rotation.x
+                self.ry = transform_stamped.transform.rotation.y
+                self.rz = transform_stamped.transform.rotation.z
+                self.rw = transform_stamped.transform.rotation.w
 
                 rot = R.from_quat([self.rw, self.rx, self.ry, self.rz])
                 trans_vec = np.array([self.x, self.y, self.z])
@@ -52,13 +52,13 @@ class Pose_Transform_Node(Node):
             elif transform_stamped.header.frame_id == 'camera_1' and transform_stamped.child_frame_id == 'tagID_1' and self.Origin is not None:
                 self.frame_id = transform_stamped.header.frame_id
                 self.child_frame_id = transform_stamped.child_frame_id
-                self.x = transform_stamped.translation.x
-                self.y = transform_stamped.translation.y
-                self.z = transform_stamped.translation.z
-                self.rx = transform_stamped.rotation.x
-                self.ry = transform_stamped.rotation.y
-                self.rz = transform_stamped.rotation.z
-                self.rw = transform_stamped.rotation.w
+                self.x = transform_stamped.transform.translation.x
+                self.y = transform_stamped.transform.translation.y
+                self.z = transform_stamped.transform.translation.z
+                self.rx = transform_stamped.transform.rotation.x
+                self.ry = transform_stamped.transform.rotation.y
+                self.rz = transform_stamped.transform.rotation.z
+                self.rw = transform_stamped.transform.rotation.w
 
                 rot = R.from_quat([self.rw, self.rx, self.ry, self.rz])
                 trans_vec = np.array([self.x, self.y, self.z])
