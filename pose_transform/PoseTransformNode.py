@@ -44,8 +44,9 @@ class Pose_Transform_Node(Node):
                 self.rw = transform_stamped.transform.rotation.w
 
                 rot = R.from_quat([self.rw, self.rx, self.ry, self.rz])
+                rot_inv = rot.inv()
                 trans_vec = np.array([self.x, self.y, self.z])
-                pose = rot.apply(trans_vec)
+                pose = rot_inv.apply(trans_vec)
                 self.x, self.y, self.z = pose[0], pose[1], pose[2]
                 self.Origin = [self.x, self.y, self.z]
 
@@ -61,8 +62,9 @@ class Pose_Transform_Node(Node):
                 self.rw = transform_stamped.transform.rotation.w
 
                 rot = R.from_quat([self.rw, self.rx, self.ry, self.rz])
+                rot_inv = rot.inv()
                 trans_vec = np.array([self.x, self.y, self.z])
-                pose = rot.apply(trans_vec) - self.Origin
+                pose = rot_inv.apply(trans_vec) - self.Origin
                 self.x, self.y, self.z = pose[0], pose[1], pose[2]
 
             elif transform_stamped.header.frame_id == 'camera_1' and transform_stamped.child_frame_id == 'tagID_2' and self.Origin is not None:
@@ -77,8 +79,9 @@ class Pose_Transform_Node(Node):
                 self.rw = transform_stamped.transform.rotation.w
 
                 rot = R.from_quat([self.rw, self.rx, self.ry, self.rz])
+                rot_inv = rot.inv()
                 trans_vec = np.array([self.x, self.y, self.z])
-                pose = rot.apply(trans_vec) - self.Origin
+                pose = rot_inv.apply(trans_vec) - self.Origin
                 self.x, self.y, self.z = pose[0], pose[1], pose[2]
 
             else:
