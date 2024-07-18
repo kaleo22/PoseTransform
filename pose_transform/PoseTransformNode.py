@@ -7,9 +7,11 @@ from tf2_msgs.msg import TFMessage
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
-class TFListenerPublisher(Node):
+class Pose_Transform_Node(Node):
     def __init__(self):
         super().__init__('pose_transform_node')
+
+        self.Origin = None
 
         self.declare_parameter('base_frame', 'default_base_frame')
         self.declare_parameter('target_frame', ['default_target_frame'])
@@ -106,7 +108,7 @@ class TFListenerPublisher(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    tf_listener_publisher = TFListenerPublisher()
+    tf_listener_publisher = Pose_Transform_Node()
     rclpy.spin(tf_listener_publisher)
     tf_listener_publisher.destroy_node()
     rclpy.shutdown()
