@@ -52,7 +52,7 @@ class PoseTransformNode(Node):
             except Exception as e:
                 self.get_logger().info(f'Could not get transform from {self.base_frame} to {target_frame}: {e}')
 
-    def process_transform(self, trans: TFMessage, target_frame: str):
+    def process_transform(self, trans: TransformStamped, target_frame: str):
         # Extract translation
         translation = trans.transform.translation
         x = translation.x
