@@ -88,7 +88,7 @@ class Pose_Transform_Node(Node):
                 # Here you can do your calculations and modify the x, y, z, rx, ry, rz, rw variables
 
                 # After calculations, create a new TFMessage to publish
-                new_tf_message = TFMessage()
+        new_tf_message = TFMessage()
         
         for transform_stamped in msg.transforms:
             # Create a new TransformStamped message
