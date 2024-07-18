@@ -3,114 +3,112 @@
 
 import rclpy
 from rclpy.node import Node
-from rclpy.time import Time
-from tf2_ros import TransformListener, Buffer
-from geometry_msgs.msg import TransformStamped
 from tf2_msgs.msg import TFMessage
-from scipy.spatial.transform import Rotation as R
 import numpy as np
+from scipy.spatial.transform import Rotation as R
 
-class PoseTransformNode(Node):
-
-
+class TFListenerPublisher(Node):
     def __init__(self):
         super().__init__('pose_transform_node')
 
-    def tf_callback(self, msg):
-        self.get_logger().info(f"Received transform from {msg.header.frame_id} to {msg.child_frame_id}")
-        self.get_logger().info(f"Translation: x={msg.transform.translation.x}, y={msg.transform.translation.y}, z={msg.transform.translation.z}")
-        self.get_logger().info(f"Rotation: x={msg.transform.rotation.x}, y={msg.transform.rotation.y}, z={msg.transform.rotation.z}, w={msg.transform.rotation.w}")
+        self.declare_parameter('base_frame', 'default_base_frame')
+        self.declare_parameter('target_frame', ['default_target_frame'])
 
-        self.tf_subscriber = self.create_subscription(TFMessage, '/tf', self.tf_callback, 10)
-        
-        
-        # Declare parameters
-        self.declare_parameter('base_frame', '')
-        self.declare_parameter('target_frames', [])
-        
-        # Get parameters
-        self.base_frame = self.get_parameter('base_frame').get_parameter_value().string_value
-        self.target_frames = self.get_parameter('target_frames').get_parameter_value().string_array_value
-        
-        # Create a buffer and a transform listener
-        self.tf_buffer = Buffer()
-        self.tf_listener = TransformListener(self.tf_buffer, self)
-        
-        # Create a timer to periodically check for transforms
-        self.timer = self.create_timer(0.1, self.on_timer)
-        
-        # Publisher for the /pose topic
-        self.pose_publisher = self.create_publisher(TransformStamped, '/pose', 10)
-        
-        self.origin = None
+        self.base_frame = self.get_parameter('base_frame').get_value()
+        self.target_frame = self.get_parameter('target_frame').get_value()
 
-    def on_timer(self):
-        for target_frame in self.target_frames:
-            # Try to get the latest transform
-            try:
-                trans = self.tf_buffer.lookup_transform(self.base_frame, target_frame, Time())
-                self.process_transform(trans, target_frame)
-            except Exception as e:
-                self.get_logger().info(f'Could not get transform from {self.base_frame} to {target_frame}: {e}')
+        self.subscription = self.create_subscription(
+            TFMessage,
+            '/tf',
+            self.listener_callback,
+            10)
+        self.publisher = self.create_publisher(TFMessage, '/tf_modified', 10)
+        self.x = self.y = self.z = 0.0
+        self.rx = self.ry = self.rz = self.rw = 0.0
 
-    def process_transform(self, trans: TransformStamped, target_frame: str):
-        # Extract translation
-        translation = trans.transform.translation
-        x = translation.x
-        y = translation.y
-        z = translation.z
-        
-        # Extract rotation
-        rotation = trans.transform.rotation
-        rx = rotation.x
-        ry = rotation.y
-        rz = rotation.z
-        rw = rotation.w
+    def listener_callback(self, msg):
+        for transform in msg.transforms:
+            if transform.header.frame_id == 'camera_1' and transform.child_frame_id == 'tagID_0' and self.Origin is None:
+                transform = msg.transforms[0].transform
+                self.frame_id = transform.header.frame_id
+                self.child_frame_id = transform.child_frame_id
+                self.x = transform.translation.x
+                self.y = transform.translation.y
+                self.z = transform.translation.z
+                self.rx = transform.rotation.x
+                self.ry = transform.rotation.y
+                self.rz = transform.rotation.z
+                self.rw = transform.rotation.w
 
-        if self.origin:
-            rot = R.from_quat([rw, rx, ry, rz])
-            trans_vec = np.array([x, y, z])
-            pose = rot.apply(trans_vec) - self.origin
-            x, y, z = pose[0], pose[1], pose[2]
-        elif target_frame == 'tagID_0' and self.origin is None:
-            rot = R.from_quat([rw, rx, ry, rz])
-            trans_vec = np.array([x, y, z])
-            self.origin = rot.apply(trans_vec)
+                rot = R.from_quat([self.rw, self.rx, self.ry, self.rz])
+                trans_vec = np.array([self.x, self.y, self.z])
+                pose = rot.apply(trans_vec)
+                self.x, self.y, self.z = pose[0], pose[1], pose[2]
+                self.Origin = [self.x, self.y, self.z]
 
-        # Log the results
-        self.get_logger().info(f'Transform from {self.base_frame} to {target_frame}:')
-        self.get_logger().info(f'Translation: x={x}, y={y}, z={z}')
-        self.get_logger().info(f'Rotation: x={rx}, y={ry}, z={rz}, w={rw}')
-        
-        # Publish the pose as TransformStamped
-        pose_msg = TransformStamped()
-        pose_msg.header.stamp = self.get_clock().now().to_msg()
-        pose_msg.header.frame_id = self.base_frame
-        pose_msg.child_frame_id = target_frame
-        pose_msg.transform.translation.x = x
-        pose_msg.transform.translation.y = y
-        pose_msg.transform.translation.z = z
-        pose_msg.transform.rotation.x = rx
-        pose_msg.transform.rotation.y = ry
-        pose_msg.transform.rotation.z = rz
-        pose_msg.transform.rotation.w = rw
-        self.pose_publisher.publish(pose_msg)
+            elif transform.header.frame_id == 'camera_1' and transform.child_frame_id == 'tagID_1' and self.Origin is not None:
+                transform = msg.transforms[0].transform
+                self.frame_id = transform.header.frame_id
+                self.child_frame_id = transform.child_frame_id
+                self.x = transform.translation.x
+                self.y = transform.translation.y
+                self.z = transform.translation.z
+                self.rx = transform.rotation.x
+                self.ry = transform.rotation.y
+                self.rz = transform.rotation.z
+                self.rw = transform.rotation.w
 
-    def pose_callback(self, msg):
-        
-        self.get_logger().info(f'Received pose: {msg}')
+                rot = R.from_quat([self.rw, self.rx, self.ry, self.rz])
+                trans_vec = np.array([self.x, self.y, self.z])
+                pose = rot.apply(trans_vec) - self.Origin
+                self.x, self.y, self.z = pose[0], pose[1], pose[2]
 
-        self.pose_subscription = self.create_subscription(TransformStamped, '/pose', self.pose_callback, 10)
-        self.pose_subscription 
+            elif transform.header.frame_id == 'camera_1' and transform.child_frame_id == 'tagID_2' and self.Origin is not None:
+                transform = msg.transforms[0].transform
+                self.frame_id = transform.header.frame_id
+                self.child_frame_id = transform.child_frame_id
+                self.x = transform.translation.x
+                self.y = transform.translation.y
+                self.z = transform.translation.z
+                self.rx = transform.rotation.x
+                self.ry = transform.rotation.y
+                self.rz = transform.rotation.z
+                self.rw = transform.rotation.w
+
+                rot = R.from_quat([self.rw, self.rx, self.ry, self.rz])
+                trans_vec = np.array([self.x, self.y, self.z])
+                pose = rot.apply(trans_vec) - self.Origin
+                self.x, self.y, self.z = pose[0], pose[1], pose[2]
+
+            else:
+                self.get_logger().info('No transform found')
+                
+
+                # Here you can do your calculations and modify the x, y, z, rx, ry, rz, rw variables
+
+                # After calculations, create a new TFMessage to publish
+                new_tf_message = TFMessage()
+                for transform in msg.transforms:
+                    new_msg = transform  # Create a new transform message
+                    new_msg.transforms[0].header.frame_id = self.frame_id
+                    new_msg.transforms[0].child_frame_id = self.child_frame_id
+                    new_msg.transforms[0].transform.translation.x = self.x
+                    new_msg.transforms[0].transform.translation.y = self.y
+                    new_msg.transforms[0].transform.translation.z = self.z
+                    new_msg.transforms[0].transform.rotation.x = self.rx
+                    new_msg.transforms[0].transform.rotation.y = self.ry
+                    new_msg.transforms[0].transform.rotation.z = self.rz
+                    new_msg.transforms[0].transform.rotation.w = self.rw
+
+                    # Publish the new TFMessage
+                    new_tf_message.transforms.append(new_msg)
+                self.publisher.publish(new_tf_message)
 
 def main(args=None):
     rclpy.init(args=args)
-    
-    # Create the node and load parameters
-    node = PoseTransformNode()
-    
-    rclpy.spin(node)
-    node.destroy_node()
+    tf_listener_publisher = TFListenerPublisher()
+    rclpy.spin(tf_listener_publisher)
+    tf_listener_publisher.destroy_node()
     rclpy.shutdown()
 
 if __name__ == '__main__':
