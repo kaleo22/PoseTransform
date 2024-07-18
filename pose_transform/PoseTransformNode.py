@@ -14,8 +14,8 @@ class TFListenerPublisher(Node):
         self.declare_parameter('base_frame', 'default_base_frame')
         self.declare_parameter('target_frame', ['default_target_frame'])
 
-        self.base_frame = self.get_parameter('base_frame').value()
-        self.target_frame = self.get_parameter('target_frame').value()
+        self.base_frame = self.get_parameter('base_frame').value
+        self.target_frame = self.get_parameter('target_frame').value
 
         self.subscription = self.create_subscription(
             TFMessage,
