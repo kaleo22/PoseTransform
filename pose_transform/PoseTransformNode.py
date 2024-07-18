@@ -6,6 +6,7 @@ from rclpy.node import Node
 from tf2_msgs.msg import TFMessage
 import numpy as np
 from scipy.spatial.transform import Rotation as R
+from geometry_msgs.msg import TransformStamped
 
 class Pose_Transform_Node(Node):
     def __init__(self):
@@ -29,18 +30,18 @@ class Pose_Transform_Node(Node):
         self.rx = self.ry = self.rz = self.rw = 0.0
 
     def listener_callback(self, msg):
-        for transform in msg.transforms:
-            if transform.header.frame_id == 'camera_1' and transform.child_frame_id == 'tagID_0' and self.Origin is None:
-                transform = msg.transforms[0].transform
-                self.frame_id = transform.header.frame_id
-                self.child_frame_id = transform.child_frame_id
-                self.x = transform.translation.x
-                self.y = transform.translation.y
-                self.z = transform.translation.z
-                self.rx = transform.rotation.x
-                self.ry = transform.rotation.y
-                self.rz = transform.rotation.z
-                self.rw = transform.rotation.w
+        for transform_stamped in msg.transforms:
+            if transform_stamped.header.frame_id == 'camera_1' and transform_stamped.child_frame_id == 'tagID_0' and self.Origin is None:
+                
+                self.frame_id = transform_stamped.header.frame_id
+                self.child_frame_id = transform_stamped.child_frame_id
+                self.x = transform_stamped.translation.x
+                self.y = transform_stamped.translation.y
+                self.z = transform_stamped.translation.z
+                self.rx = transform_stamped.rotation.x
+                self.ry = transform_stamped.rotation.y
+                self.rz = transform_stamped.rotation.z
+                self.rw = transform_stamped.rotation.w
 
                 rot = R.from_quat([self.rw, self.rx, self.ry, self.rz])
                 trans_vec = np.array([self.x, self.y, self.z])
@@ -48,34 +49,32 @@ class Pose_Transform_Node(Node):
                 self.x, self.y, self.z = pose[0], pose[1], pose[2]
                 self.Origin = [self.x, self.y, self.z]
 
-            elif transform.header.frame_id == 'camera_1' and transform.child_frame_id == 'tagID_1' and self.Origin is not None:
-                transform = msg.transforms[0].transform
-                self.frame_id = transform.header.frame_id
-                self.child_frame_id = transform.child_frame_id
-                self.x = transform.translation.x
-                self.y = transform.translation.y
-                self.z = transform.translation.z
-                self.rx = transform.rotation.x
-                self.ry = transform.rotation.y
-                self.rz = transform.rotation.z
-                self.rw = transform.rotation.w
+            elif transform_stamped.header.frame_id == 'camera_1' and transform_stamped.child_frame_id == 'tagID_1' and self.Origin is not None:
+                self.frame_id = transform_stamped.header.frame_id
+                self.child_frame_id = transform_stamped.child_frame_id
+                self.x = transform_stamped.translation.x
+                self.y = transform_stamped.translation.y
+                self.z = transform_stamped.translation.z
+                self.rx = transform_stamped.rotation.x
+                self.ry = transform_stamped.rotation.y
+                self.rz = transform_stamped.rotation.z
+                self.rw = transform_stamped.rotation.w
 
                 rot = R.from_quat([self.rw, self.rx, self.ry, self.rz])
                 trans_vec = np.array([self.x, self.y, self.z])
                 pose = rot.apply(trans_vec) - self.Origin
                 self.x, self.y, self.z = pose[0], pose[1], pose[2]
 
-            elif transform.header.frame_id == 'camera_1' and transform.child_frame_id == 'tagID_2' and self.Origin is not None:
-                transform = msg.transforms[0].transform
-                self.frame_id = transform.header.frame_id
-                self.child_frame_id = transform.child_frame_id
-                self.x = transform.translation.x
-                self.y = transform.translation.y
-                self.z = transform.translation.z
-                self.rx = transform.rotation.x
-                self.ry = transform.rotation.y
-                self.rz = transform.rotation.z
-                self.rw = transform.rotation.w
+            elif transform_stamped.header.frame_id == 'camera_1' and transform_stamped.child_frame_id == 'tagID_2' and self.Origin is not None:
+                self.frame_id = transform_stamped.header.frame_id
+                self.child_frame_id = transform_stamped.child_frame_id
+                self.x = transform_stamped.transform.translation.x
+                self.y = transform_stamped.transform.translation.y
+                self.z = transform_stamped.transform.translation.z
+                self.rx = transform_stamped.transform.rotation.x
+                self.ry = transform_stamped.transform.rotation.y
+                self.rz = transform_stamped.transform.rotation.z
+                self.rw = transform_stamped.transform.rotation.w
 
                 rot = R.from_quat([self.rw, self.rx, self.ry, self.rz])
                 trans_vec = np.array([self.x, self.y, self.z])
@@ -90,21 +89,30 @@ class Pose_Transform_Node(Node):
 
                 # After calculations, create a new TFMessage to publish
                 new_tf_message = TFMessage()
-                for transform in msg.transforms:
-                    new_msg = transform  # Create a new transform message
-                    new_msg.transforms[0].header.frame_id = self.frame_id
-                    new_msg.transforms[0].child_frame_id = self.child_frame_id
-                    new_msg.transforms[0].transform.translation.x = self.x
-                    new_msg.transforms[0].transform.translation.y = self.y
-                    new_msg.transforms[0].transform.translation.z = self.z
-                    new_msg.transforms[0].transform.rotation.x = self.rx
-                    new_msg.transforms[0].transform.rotation.y = self.ry
-                    new_msg.transforms[0].transform.rotation.z = self.rz
-                    new_msg.transforms[0].transform.rotation.w = self.rw
+        
+        for transform_stamped in msg.transforms:
+            # Create a new TransformStamped message
+            new_transform_stamped = TransformStamped()
+            
+            # Copy the original transform's header but update the frame_id and child_frame_id
+            new_transform_stamped.header.frame_id = self.frame_id
+            new_transform_stamped.header.stamp = transform_stamped.header.stamp  # Preserving the original timestamp
+            new_transform_stamped.child_frame_id = self.child_frame_id
+            
+            # Set the new translation and rotation values
+            new_transform_stamped.transform.translation.x = self.x
+            new_transform_stamped.transform.translation.y = self.y
+            new_transform_stamped.transform.translation.z = self.z
+            new_transform_stamped.transform.rotation.x = self.rx
+            new_transform_stamped.transform.rotation.y = self.ry
+            new_transform_stamped.transform.rotation.z = self.rz
+            new_transform_stamped.transform.rotation.w = self.rw
+            
+            # Append the new TransformStamped message to the TFMessage
+            new_tf_message.transforms.append(new_transform_stamped)
 
-                    # Publish the new TFMessage
-                    new_tf_message.transforms.append(new_msg)
-                self.publisher.publish(new_tf_message)
+        # Now new_tf_message is ready to be published
+        self.publisher.publish(new_tf_message)
 
 def main(args=None):
     rclpy.init(args=args)
