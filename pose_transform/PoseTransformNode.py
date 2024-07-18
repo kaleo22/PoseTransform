@@ -13,6 +13,12 @@ class PoseTransformNode(Node):
 
     def __init__(self):
         super().__init__('pose_transform_node')
+
+        self.tf_subscriber = self.create_subscription(TransformStamped, '/tf', self.tf_callback, 10)
+        def tf_callback(self, msg):
+            self.get_logger().info(f"Received transform from {msg.header.frame_id} to {msg.child_frame_id}")
+            self.get_logger().info(f"Translation: x={msg.transform.translation.x}, y={msg.transform.translation.y}, z={msg.transform.translation.z}")
+            self.get_logger().info(f"Rotation: x={msg.transform.rotation.x}, y={msg.transform.rotation.y}, z={msg.transform.rotation.z}, w={msg.transform.rotation.w}")
         
         # Declare parameters
         self.declare_parameter('base_frame', '')
