@@ -40,7 +40,7 @@ class PoseTransformNode(Node):
         self.timer = self.create_timer(0.1, self.on_timer)
         
         # Publisher for the /pose topic
-        self.pose_publisher = self.create_publisher(TFMessage, '/pose', 10)
+        self.pose_publisher = self.create_publisher(TransformStamped, '/pose', 10)
         
         self.origin = None
 
