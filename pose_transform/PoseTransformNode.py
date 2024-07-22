@@ -30,6 +30,9 @@ class Pose_Transform_Node(Node):
         self.rx = self.ry = self.rz = self.rw = 0.0
 
     def listener_callback(self, msg):
+        
+        new_tf_message = TFMessage()
+        
         for transform_stamped in msg.transforms:
             if transform_stamped.header.frame_id == 'camera_1' and transform_stamped.child_frame_id == 'tagID_0' and self.Origin is None:
                 
@@ -50,6 +53,25 @@ class Pose_Transform_Node(Node):
                 self.x, self.y, self.z = pose[0], pose[1], pose[2]
                 self.Origin = [self.x, self.y, self.z]
 
+                
+                new_transform_stamped = TransformStamped()
+                
+                
+                new_transform_stamped.header.frame_id = self.frame_id
+                new_transform_stamped.header.stamp = transform_stamped.header.stamp  
+                new_transform_stamped.child_frame_id = self.child_frame_id
+                
+                # Set the new translation and rotation values
+                new_transform_stamped.transform.translation.x = self.x
+                new_transform_stamped.transform.translation.y = self.y
+                new_transform_stamped.transform.translation.z = self.z
+                new_transform_stamped.transform.rotation.x = self.rx
+                new_transform_stamped.transform.rotation.y = self.ry
+                new_transform_stamped.transform.rotation.z = self.rz
+                new_transform_stamped.transform.rotation.w = self.rw
+
+                new_tf_message.transforms.append(new_transform_stamped)
+
             elif transform_stamped.header.frame_id == 'camera_1' and transform_stamped.child_frame_id == 'tagID_1' and self.Origin is not None:
                 self.frame_id = transform_stamped.header.frame_id
                 self.child_frame_id = transform_stamped.child_frame_id
@@ -66,6 +88,25 @@ class Pose_Transform_Node(Node):
                 trans_vec = np.array([self.x, self.y, self.z])
                 pose = rot_inv.apply(trans_vec) - self.Origin
                 self.x, self.y, self.z = pose[0], pose[1], pose[2]
+
+                
+                new_transform_stamped = TransformStamped()
+                
+                
+                new_transform_stamped.header.frame_id = self.frame_id
+                new_transform_stamped.header.stamp = transform_stamped.header.stamp  
+                new_transform_stamped.child_frame_id = self.child_frame_id
+                
+                # Set the new translation and rotation values
+                new_transform_stamped.transform.translation.x = self.x
+                new_transform_stamped.transform.translation.y = self.y
+                new_transform_stamped.transform.translation.z = self.z
+                new_transform_stamped.transform.rotation.x = self.rx
+                new_transform_stamped.transform.rotation.y = self.ry
+                new_transform_stamped.transform.rotation.z = self.rz
+                new_transform_stamped.transform.rotation.w = self.rw
+
+                new_tf_message.transforms.append(new_transform_stamped)
 
             elif transform_stamped.header.frame_id == 'camera_1' and transform_stamped.child_frame_id == 'tagID_2' and self.Origin is not None:
                 self.frame_id = transform_stamped.header.frame_id
@@ -84,37 +125,28 @@ class Pose_Transform_Node(Node):
                 pose = rot_inv.apply(trans_vec) - self.Origin
                 self.x, self.y, self.z = pose[0], pose[1], pose[2]
 
+                
+                new_transform_stamped = TransformStamped()
+                
+                
+                new_transform_stamped.header.frame_id = self.frame_id
+                new_transform_stamped.header.stamp = transform_stamped.header.stamp  # Preserving the original timestamp
+                new_transform_stamped.child_frame_id = self.child_frame_id
+                
+                
+                new_transform_stamped.transform.translation.x = self.x
+                new_transform_stamped.transform.translation.y = self.y
+                new_transform_stamped.transform.translation.z = self.z
+                new_transform_stamped.transform.rotation.x = self.rx
+                new_transform_stamped.transform.rotation.y = self.ry
+                new_transform_stamped.transform.rotation.z = self.rz
+                new_transform_stamped.transform.rotation.w = self.rw
+
+                new_tf_message.transforms.append(new_transform_stamped)
+
             else:
                 self.get_logger().info('No transform found')
                 
-
-                # Here you can do your calculations and modify the x, y, z, rx, ry, rz, rw variables
-
-                # After calculations, create a new TFMessage to publish
-        new_tf_message = TFMessage()
-        
-        for transform_stamped in msg.transforms:
-            # Create a new TransformStamped message
-            new_transform_stamped = TransformStamped()
-            
-            # Copy the original transform's header but update the frame_id and child_frame_id
-            new_transform_stamped.header.frame_id = self.frame_id
-            new_transform_stamped.header.stamp = transform_stamped.header.stamp  # Preserving the original timestamp
-            new_transform_stamped.child_frame_id = self.child_frame_id
-            
-            # Set the new translation and rotation values
-            new_transform_stamped.transform.translation.x = self.x
-            new_transform_stamped.transform.translation.y = self.y
-            new_transform_stamped.transform.translation.z = self.z
-            new_transform_stamped.transform.rotation.x = self.rx
-            new_transform_stamped.transform.rotation.y = self.ry
-            new_transform_stamped.transform.rotation.z = self.rz
-            new_transform_stamped.transform.rotation.w = self.rw
-            
-            # Append the new TransformStamped message to the TFMessage
-            new_tf_message.transforms.append(new_transform_stamped)
-
-        # Now new_tf_message is ready to be published
         self.publisher.publish(new_tf_message)
 
 def main(args=None):
