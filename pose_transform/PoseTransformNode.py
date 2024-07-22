@@ -29,6 +29,7 @@ class Pose_Transform_Node(Node):
         self.x = self.y = self.z = 0.0
         self.rx = self.ry = self.rz = self.rw = 0.0
 
+
     def listener_callback(self, msg):
         
         new_tf_message = TFMessage()
@@ -146,6 +147,8 @@ class Pose_Transform_Node(Node):
 
             else:
                 self.get_logger().info('No transform found')
+                self.get_logger().info(f"Frame ID: {transform_stamped.header.frame_id}")
+                self.get_logger().info(f"Frame ID: {transform_stamped.header.child_frame_id}")
                 
         self.publisher.publish(new_tf_message)
 
