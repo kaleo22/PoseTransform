@@ -3,11 +3,17 @@ from launch_ros.actions import Node
 from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 from pathlib import Path
+from ament_index_python.packages import get_package_share_directory
+import os
 import yaml
 
 def generate_launch_description():
     
-    parameters = Path('/pose_transform/params/config.yaml')
+    package_dir = get_package_share_directory('pose_transform')
+    parameters = os.path.join(package_dir, 'params', 'config.yaml')
+    print("Resolved path to config.yaml:", parameters)
+
+    #parameters = Path('pose_transform/params/config.yaml')
 
     with open(parameters, 'r') as f:
         params = yaml.safe_load(f)['pose_transform_node']['ros__parameters']

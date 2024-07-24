@@ -10,8 +10,8 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' +package_name, ['launch/PoseTransform_launch.py'] ),
-        ('share/' +package_name, ['params/config.yaml'])
+        ('share/' + package_name + '/launch', ['launch/PoseTransform_launch.py'] ),
+        ('share/' + package_name + '/params', ['params/config.yaml'])
     ],
     install_requires=['setuptools'],
     zip_safe=True,
