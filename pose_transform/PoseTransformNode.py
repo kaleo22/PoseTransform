@@ -117,7 +117,8 @@ class Pose_Transform_Node(Node):
                 self.get_logger().info(f"Frame ID: {self.new_transform_stamped.header.frame_id}")
                 self.get_logger().info(f"Frame ID: {self.new_transform_stamped.child_frame_id}")
                 
-        self.publisher.publish(new_tf_message)
+                self.get_logger().info(f"New TF Message: {new_tf_message}")
+                self.publisher.publish(new_tf_message)
 
 def main(args=None):
     rclpy.init(args=args)
