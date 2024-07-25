@@ -118,8 +118,9 @@ class Pose_Transform_Node(Node):
 
                 t = TransformStamped()
                 t.header.stamp = self.get_clock().now().to_msg()
-                t.header.frame_id = self.frame_id
-                t.child_frame_id = self.child_frame_id
+                t.header.frame_id = "new" + self.frame_id
+                t.child_frame_id = "new" + self.child_frame_id
+                self.get_logger().info(f"Frame ID: {t.header.frame_id}")
                 t.transform.translation.x = self.x
                 self.get_logger().info(f"New X: {self.x}")
                 t.transform.translation.y = self.y
