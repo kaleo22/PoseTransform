@@ -4,6 +4,7 @@
 import rclpy
 from rclpy.node import Node
 from tf2_msgs.msg import TFMessage
+from tf2_ros import TransformBroadcaster
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 from geometry_msgs.msg import TransformStamped
@@ -28,6 +29,8 @@ class Pose_Transform_Node(Node):
         self.publisher = self.create_publisher(TFMessage, '/tf_modified', 10)
         self.x = self.y = self.z = 0.0
         self.rx = self.ry = self.rz = self.rw = 0.0
+
+        self.tf_broadcaster = TransformBroadcaster(self)
 
 
     def listener_callback(self, msg):
@@ -98,7 +101,7 @@ class Pose_Transform_Node(Node):
                 
                 
                 self.new_transform_stamped.header.frame_id = self.frame_id
-                self.new_transform_stamped.header.stamp = transform_stamped.header.stamp  
+                self.new_transform_stamped.header.stamp = self.get_clock().now().to_msg()  
                 self.new_transform_stamped.child_frame_id = self.child_frame_id
                 
                 # Set the new translation and rotation values
@@ -119,6 +122,7 @@ class Pose_Transform_Node(Node):
                 
                 self.get_logger().info(f"New TF Message: {new_tf_message}")
                 self.publisher.publish(new_tf_message)
+                self.tf_broadcaster.sendTransform(self.new_transform_stamped)
 
 def main(args=None):
     rclpy.init(args=args)
