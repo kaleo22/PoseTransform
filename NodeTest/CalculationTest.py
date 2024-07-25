@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.spatial.transform import Rotation as R
+import quaternion
 
 def q_conjugate(q):
     # Return the conjugate of the quaternion
@@ -40,28 +41,26 @@ def rotateframe(q, point):
     # Return the vector part of the resulting quaternion
     return vq
 
-Origin = np.array([0.750084268750818, -0.396146707532958, 1.293672642992076])
-rot = R.from_quat([-0.188348129218565, 0.098321518123007, 0.950766413665119, 0.225612694545813])
-rot_Origin = [-0.188348129218565, 0.098321518123007, 0.950766413665119, 0.225612694545813]
+Origin = np.array([0.750084268750818, -0.396146707532958,  1.293672642992076]) 
+rot = R.from_quat([ 0.098321518123007, 0.950766413665119, 0.225612694545813, -0.188348129218565])
+print(rot.as_quat())
+rot_conj = rot.inv()
+Origin_Pose = rot_conj.apply(Origin)
+print(str("OriginPose"),Origin_Pose)
 
-Pose_Origin = (0.750084268750818, -0.396146707532958, 1.293672642992076)
+Tag_2 = np.array([-0.029628919951449, 0.813203462309145, 2.257667863250954])
 
-Origin_Pose = rot.apply(Origin)
+Tag_2_rot = R.from_quat([0.085041825369440, 0.952734744979311, 0.223300455243112, -0.187620095766046])
+Tag_2_rot_conj = Tag_2_rot.inv()
 
-Tag_1 = np.array([-0.029628919951449, 0.813203462309145, 2.257667863250954])
-
-Tag_1_Pose = (-0.029628919951449, 0.813203462309145, 2.257667863250954)
-
-Tag_1_rot = R.from_quat([-0.187620095766046, 0.085041825369440, 0.952734744979311, 0.223300455243112])
-rot_2_2 = [-0.187620095766046, 0.085041825369440, 0.952734744979311, 0.223300455243112]
-
-Tag_2_initial_pose = Tag_1_rot.apply(Tag_1)
+Tag_2_initial_pose = Tag_2_rot_conj.apply(Tag_2)
+print(str("Tag_2_initial_pose"), Tag_2_initial_pose)
 
 Tag_2_Pose = (Tag_2_initial_pose - Origin_Pose) * 1.638361
 
-print(Tag_2_Pose)
+print(str("Tag 2 Pose"), Tag_2_Pose)
 
-Tag_2 = rotateframe(Tag_1_rot.as_quat(), Tag_1) - rotateframe(rot.as_quat(), Origin)
+#Tag_2 = rotateframe(Tag_1_rot.as_quat(), Tag_1) - rotateframe(rot.as_quat(), Origin)
 
-Pose_2_2 = qv_mult(rot_2_2, Tag_1_Pose) - qv_mult(rot_Origin, Pose_Origin)
-print(Pose_2_2)
+# Pose_2_2 = qv_mult(rot_2_2, Tag_1_Pose) - qv_mult(rot_Origin, Pose_Origin)
+# print(Pose_2_2)

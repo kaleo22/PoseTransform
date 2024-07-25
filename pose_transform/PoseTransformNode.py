@@ -110,7 +110,7 @@ class Pose_Transform_Node(Node):
                 new_tf_message.transforms.append(new_transform_stamped)
 
             
-                self.get_logger().info('No transform found')
+                
                 self.get_logger().info(f"Frame ID: {transform_stamped.header.frame_id}")
                 self.get_logger().info(f"Frame ID: {transform_stamped.child_frame_id}")
                 
