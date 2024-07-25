@@ -93,8 +93,11 @@ class Pose_Transform_Node(Node):
                 self.pose = self.rot_inv.apply(self.trans_vec) 
                 self.newpose = (self.pose - self.Origin) * 1.638361
                 self.get_logger().info(f"Pose: {self.pose}")
+                self.get_logger().info(f"NewPose first Argument: {self.newpose[0]}")
                 self.get_logger().info(f"New Pose: {self.newpose}")
-                self.x, self.y, self.z = self.newpose[0], self.newpose[1], self.newpose[2]
+                self.x = self.newpose[0]
+                self.y = self.newpose[1]
+                self.z = self.newpose[2]
 
                 
                 self.new_transform_stamped = TransformStamped()
@@ -113,6 +116,20 @@ class Pose_Transform_Node(Node):
                 self.new_transform_stamped.transform.rotation.z = self.rz
                 self.new_transform_stamped.transform.rotation.w = self.rw
 
+                t = TransformStamped()
+                t.header.stamp = self.get_clock().now().to_msg()
+                t.header.frame_id = self.frame_id
+                t.child_frame_id = self.child_frame_id
+                t.transform.translation.x = self.x
+                self.get_logger().info(f"New X: {self.x}")
+                t.transform.translation.y = self.y
+                t.transform.translation.z = self.z
+                t.transform.rotation.x = self.rx
+                t.transform.rotation.y = self.ry
+                t.transform.rotation.z = self.rz
+                t.transform.rotation.w = self.rw
+
+
                 new_tf_message.transforms.append(self.new_transform_stamped)
 
             
@@ -122,7 +139,7 @@ class Pose_Transform_Node(Node):
                 
                 self.get_logger().info(f"New TF Message: {new_tf_message}")
                 self.publisher.publish(new_tf_message)
-                self.tf_broadcaster.sendTransform(self.new_transform_stamped)
+                self.tf_broadcaster.sendTransform(t)
 
 def main(args=None):
     rclpy.init(args=args)
