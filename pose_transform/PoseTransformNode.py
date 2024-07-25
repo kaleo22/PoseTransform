@@ -12,7 +12,7 @@ class Pose_Transform_Node(Node):
     def __init__(self):
         super().__init__('pose_transform_node')
 
-        self.Origin = None
+        self.Origin = np.array([-0.20203712, 0.36291002, -1.49017612])
 
         self.declare_parameter('base_frame', 'default_base_frame')
         self.declare_parameter('target_frame', ['default_target_frame'])
@@ -47,12 +47,12 @@ class Pose_Transform_Node(Node):
                 self.rz = transform_stamped.transform.rotation.z
                 self.rw = transform_stamped.transform.rotation.w
 
-                rot = R.from_quat([self.rw, self.rx, self.ry, self.rz])
+                rot = R.from_quat([self.rx, self.ry, self.rz, self.rw])
                 rot_inv = rot.inv()
                 trans_vec = np.array([self.x, self.y, self.z])
                 pose = rot_inv.apply(trans_vec)
                 self.x, self.y, self.z = pose[0], pose[1], pose[2]
-                self.Origin = [self.x, self.y, self.z]
+                self.Origin = np.array([self.x, self.y, self.z])
 
                 
                 new_transform_stamped = TransformStamped()
@@ -84,35 +84,38 @@ class Pose_Transform_Node(Node):
                 self.rz = transform_stamped.transform.rotation.z
                 self.rw = transform_stamped.transform.rotation.w
 
-                rot = R.from_quat([self.rw, self.rx, self.ry, self.rz])
-                rot_inv = rot.inv()
-                trans_vec = np.array([self.x, self.y, self.z])
-                pose = rot_inv.apply(trans_vec) - self.Origin
-                self.x, self.y, self.z = pose[0], pose[1], pose[2]
+                self.rot = R.from_quat([self.rx, self.ry, self.rz, self.rw])
+                self.rot_inv = self.rot.inv()
+                self.trans_vec = np.array([self.x, self.y, self.z])
+                self.pose = self.rot_inv.apply(self.trans_vec) 
+                self.newpose = (self.pose - self.Origin) * 1.638361
+                self.get_logger().info(f"Pose: {self.pose}")
+                self.get_logger().info(f"New Pose: {self.newpose}")
+                self.x, self.y, self.z = self.newpose[0], self.newpose[1], self.newpose[2]
 
                 
-                new_transform_stamped = TransformStamped()
+                self.new_transform_stamped = TransformStamped()
                 
                 
-                new_transform_stamped.header.frame_id = self.frame_id
-                new_transform_stamped.header.stamp = transform_stamped.header.stamp  
-                new_transform_stamped.child_frame_id = self.child_frame_id
+                self.new_transform_stamped.header.frame_id = self.frame_id
+                self.new_transform_stamped.header.stamp = transform_stamped.header.stamp  
+                self.new_transform_stamped.child_frame_id = self.child_frame_id
                 
                 # Set the new translation and rotation values
-                new_transform_stamped.transform.translation.x = self.x
-                new_transform_stamped.transform.translation.y = self.y
-                new_transform_stamped.transform.translation.z = self.z
-                new_transform_stamped.transform.rotation.x = self.rx
-                new_transform_stamped.transform.rotation.y = self.ry
-                new_transform_stamped.transform.rotation.z = self.rz
-                new_transform_stamped.transform.rotation.w = self.rw
+                self.new_transform_stamped.transform.translation.x = self.x
+                self.new_transform_stamped.transform.translation.y = self.y
+                self.new_transform_stamped.transform.translation.z = self.z
+                self.new_transform_stamped.transform.rotation.x = self.rx
+                self.new_transform_stamped.transform.rotation.y = self.ry
+                self.new_transform_stamped.transform.rotation.z = self.rz
+                self.new_transform_stamped.transform.rotation.w = self.rw
 
-                new_tf_message.transforms.append(new_transform_stamped)
+                new_tf_message.transforms.append(self.new_transform_stamped)
 
             
                 
-                self.get_logger().info(f"Frame ID: {transform_stamped.header.frame_id}")
-                self.get_logger().info(f"Frame ID: {transform_stamped.child_frame_id}")
+                self.get_logger().info(f"Frame ID: {self.new_transform_stamped.header.frame_id}")
+                self.get_logger().info(f"Frame ID: {self.new_transform_stamped.child_frame_id}")
                 
         self.publisher.publish(new_tf_message)
 

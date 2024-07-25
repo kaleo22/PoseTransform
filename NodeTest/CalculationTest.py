@@ -48,6 +48,14 @@ rot_conj = rot.inv()
 Origin_Pose = rot_conj.apply(Origin)
 print(str("OriginPose"),Origin_Pose)
 
+Tag_1 = np.array([0.3633070657556823, 0.19205179472479567, 1.7602946782879632])
+
+Tag_1_rot = R.from_quat([-0.0866144734245208, -0.9541252646487046, -0.22110438749203234, 0.18236162475752893])
+
+Tag_1_rot_conj = Tag_1_rot.inv()
+
+Tag1_initial_pose = Tag_1_rot_conj.apply(Tag_1)
+
 Tag_2 = np.array([-0.029628919951449, 0.813203462309145, 2.257667863250954])
 
 Tag_2_rot = R.from_quat([0.085041825369440, 0.952734744979311, 0.223300455243112, -0.187620095766046])
@@ -57,8 +65,10 @@ Tag_2_initial_pose = Tag_2_rot_conj.apply(Tag_2)
 print(str("Tag_2_initial_pose"), Tag_2_initial_pose)
 
 Tag_2_Pose = (Tag_2_initial_pose - Origin_Pose) * 1.638361
+Tag_1_Pose = (Tag1_initial_pose - Origin_Pose) * 1.638361
 
 print(str("Tag 2 Pose"), Tag_2_Pose)
+print(str("Tag 1 Pose"), Tag_1_Pose)
 
 #Tag_2 = rotateframe(Tag_1_rot.as_quat(), Tag_1) - rotateframe(rot.as_quat(), Origin)
 
