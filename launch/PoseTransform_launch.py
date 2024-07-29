@@ -21,7 +21,7 @@ def generate_launch_description():
     frames = params.get('base_frame', [])
     containers = []
 
-    for i in enumerate(frames, start=1):
+    for i, frame in enumerate(frames, start=1):
         container_name = f'PoseTransformNodeContainer{i}'
         node_name = f'pose_transform{i}'
         
