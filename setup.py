@@ -23,7 +23,7 @@ setup(
     entry_points={
         'console_scripts': [
             'PoseTransformNode = pose_transform.PoseTransformNode:main',
-            'ThrowTFNode = pose_transform.ThrowTFNode:main',
+            'ThrowTFNode = pose_transform.throwtfnode:main',
         ],
     },
     

@@ -13,31 +13,38 @@ def generate_launch_description():
     parameters = os.path.join(package_dir, 'params', 'config.yaml')
     print("Resolved path to config.yaml:", parameters)
 
-    #parameters = Path('pose_transform/params/config.yaml')
 
     with open(parameters, 'r') as f:
         params = yaml.safe_load(f)['pose_transform_node']['ros__parameters']
     print(params)
         
+    frames = params.get('base_frame', [])
+    containers = []
+
+    for i, frame in enumerate(frames, start=1):
+        container_name = f'PoseTransformNodeContainer{i}'
+        node_name = f'pose_transform{i}'
         
-    PoseTransformNodeContainer = ComposableNodeContainer(
-        name = 'PoseTransformNode',
-        namespace = '',
-        package = 'pose_transform',
-        executable = 'PoseTransformNode',
-        composable_node_descriptions=[
-            ComposableNode(
-                package='pose_transform',
-                plugin='',
-                name='pose_transform',
-                parameters=[params])
-        ],
-        output = 'screen'
-    )
+        container = ComposableNodeContainer(
+            name=container_name,
+            namespace='',
+            package='pose_transform',
+            executable='PoseTransformNode',
+            composable_node_descriptions=[
+                ComposableNode(
+                    package='pose_transform',
+                    plugin='',
+                    name=node_name,
+                    parameters=[params])
+            ],
+            output='screen'
+        )
+        
+        containers.append(container)
     
     
     
     
     
     
-    return LaunchDescription([PoseTransformNodeContainer])
+    return LaunchDescription(containers)
