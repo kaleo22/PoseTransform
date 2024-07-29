@@ -23,9 +23,9 @@ class Pose_Transform_Node(Node):
 
         self.subscription = self.create_subscription(
             TFMessage,
-            '/tf_2',
+            '/tf',
             self.listener_callback,
-            10) #changed to tf_2 for debugging
+            10) 
         self.publisher = self.create_publisher(TFMessage, '/tf_modified', 10)
         self.x = self.y = self.z = 0.0
         self.rx = self.ry = self.rz = self.rw = 0.0
