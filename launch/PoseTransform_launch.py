@@ -24,6 +24,12 @@ def generate_launch_description():
     for i, frame in enumerate(frames, start=1):
         container_name = f'PoseTransformNodeContainer{i}'
         node_name = f'pose_transform{i}'
+
+        mapping = [
+            ('/tf', f'/tf_{i}')
+            ('/tf_modified', f'/pose_{i}')
+        ]
+    
         
         container = ComposableNodeContainer(
             name=container_name,
@@ -35,7 +41,9 @@ def generate_launch_description():
                     package='pose_transform',
                     plugin='',
                     name=node_name,
-                    parameters=[params])
+                    parameters=[params],
+                    remappings=mapping
+                )
             ],
             output='screen'
         )
