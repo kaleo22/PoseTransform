@@ -74,3 +74,15 @@ print(str("Tag 1 Pose"), Tag_1_Pose)
 
 # Pose_2_2 = qv_mult(rot_2_2, Tag_1_Pose) - qv_mult(rot_Origin, Pose_Origin)
 # print(Pose_2_2)
+
+camnnum = 3
+
+for i in range(1, camnnum +1):
+    print(i)
+
+frames = ["1", "2", "3"]
+
+for i, frame in enumerate(frames, start=1):
+    print(i, frame)
+
+    
