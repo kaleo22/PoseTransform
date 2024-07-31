@@ -17,10 +17,11 @@ class Pose_Transform_Node(Node):
 
         self.declare_parameter('base_frame', 'default_base_frame')
         self.declare_parameter('target_frame', ['default_target_frame'])
-        self.input = self.declare_parameter('/tf', '/tf')
+        self.declare_parameter('/tf', '/tf')
 
         self.base_frame = self.get_parameter('base_frame').value
         self.target_frame = self.get_parameter('target_frame').value
+        self.input = self.get_parameter('/tf').value
 
         self.subscription = self.create_subscription(
             TFMessage,
