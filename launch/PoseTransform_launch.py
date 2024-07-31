@@ -27,7 +27,7 @@ def generate_launch_description():
 
         mapping = [
             ('base_frame', f'{frame}'),
-            ('/tf', f'/tf_{i}')
+            ('/tf', f'/tf_{i}'),
             ('/tf_modified', f'/pose_{i}')
         ]
     
