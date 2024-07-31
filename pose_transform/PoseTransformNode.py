@@ -18,17 +18,19 @@ class Pose_Transform_Node(Node):
         self.declare_parameter('base_frame', 'default_base_frame')
         self.declare_parameter('target_frame', ['default_target_frame'])
         self.declare_parameter('/tf', '/tf')
+        self.declare_parameter('/tf_modified', '/tf_modified')
 
         self.base_frame = self.get_parameter('base_frame').value
         self.target_frame = self.get_parameter('target_frame').value
         self.input = self.get_parameter('/tf').value
+        self.output = self.get_parameter('/tf_modified').value
 
         self.subscription = self.create_subscription(
             TFMessage,
             self.input,
             self.listener_callback,
             10) 
-        self.publisher = self.create_publisher(TFMessage, '/tf_modified', 10)
+        self.publisher = self.create_publisher(TFMessage, self.output, 10)
         self.x = self.y = self.z = 0.0
         self.rx = self.ry = self.rz = self.rw = 0.0
 
