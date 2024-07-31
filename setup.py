@@ -19,7 +19,9 @@ setup(
     maintainer_email='leonard.kaempf@icloud.com',
     description='TODO: Package description',
     license='TODO: License declaration',
-    tests_require=['pytest'],
+    extras_require={
+        'dev': ['pytest'],
+    },
     entry_points={
         'console_scripts': [
             'PoseTransformNode = pose_transform.PoseTransformNode:main',

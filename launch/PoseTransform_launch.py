@@ -1,3 +1,4 @@
+#import debugpy
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch_ros.actions import ComposableNodeContainer
@@ -7,8 +8,14 @@ from ament_index_python.packages import get_package_share_directory
 import os
 import yaml
 
+# debugpy.listen(("0.0.0.0", 5678))
+# print("Waiting for debugger attach...")
+# debugpy.wait_for_client()
+# print("Debugger attached.")
+
+
 def generate_launch_description():
-    
+
     package_dir = get_package_share_directory('pose_transform')
     parameters = os.path.join(package_dir, 'params', 'config.yaml')
     print("Resolved path to config.yaml:", parameters)
@@ -22,6 +29,7 @@ def generate_launch_description():
     containers = []
 
     for i, frame in enumerate(frames, start=1):
+        print(i, frame)
         container_name = f'PoseTransformNodeContainer{i}'
         node_name = f'pose_transform{i}'
 
